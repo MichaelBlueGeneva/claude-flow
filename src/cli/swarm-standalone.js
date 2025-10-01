@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { existsSync } from 'node:fs';
 import { cwd, exit } from './node-compat.js';
+import { isClaudeCliAvailable } from '../utils/claude-cli-detector.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -110,9 +111,7 @@ if (!swarmPath) {
     const { execSync } = await import('child_process');
 
     // Check if claude command exists
-    try {
-      execSync('which claude', { stdio: 'ignore' });
-    } catch (e) {
+    if (!isClaudeCliAvailable()) {
       // Claude not found, show fallback message
       console.log(`✅ Swarm initialized with ID: ${swarmId}`);
       console.log('\n⚠️  Note: Advanced swarm features require Claude or local installation.');

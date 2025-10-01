@@ -18,6 +18,7 @@ import {
   warnNonInteractive,
   checkNonInteractiveAuth,
 } from '../utils/interactive-detector.js';
+import { isClaudeCliAvailable } from '../../utils/claude-cli-detector.js';
 import {
   safeInteractive,
   nonInteractiveProgress,
@@ -2040,12 +2041,9 @@ async function spawnClaudeCodeInstances(swarmId, swarmName, objective, workers, 
 
       // Check if claude command exists
       const { spawn: childSpawn, execSync } = await import('child_process');
-      let claudeAvailable = false;
+      const claudeAvailable = isClaudeCliAvailable();
 
-      try {
-        execSync('which claude', { stdio: 'ignore' });
-        claudeAvailable = true;
-      } catch {
+      if (!claudeAvailable) {
         console.log(chalk.yellow('\n⚠️  Claude Code CLI not found in PATH'));
         console.log(chalk.gray('Install it with: npm install -g @anthropic-ai/claude-code'));
         console.log(chalk.gray('\nFalling back to displaying instructions...'));
@@ -3005,12 +3003,9 @@ async function launchClaudeWithContext(prompt, flags, sessionId) {
     console.log(chalk.green(`\n✓ Session context saved to: ${promptFile}`));
 
     const { spawn: childSpawn, execSync } = await import('child_process');
-    let claudeAvailable = false;
+    const claudeAvailable = isClaudeCliAvailable();
 
-    try {
-      execSync('which claude', { stdio: 'ignore' });
-      claudeAvailable = true;
-    } catch {
+    if (!claudeAvailable) {
       console.log(chalk.yellow('\n⚠️  Claude Code CLI not found'));
       console.log(chalk.gray('Install Claude Code: npm install -g @anthropic-ai/claude-code'));
       console.log(chalk.gray(`Run with: claude < ${promptFile}`));

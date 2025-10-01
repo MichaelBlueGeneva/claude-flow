@@ -10,6 +10,7 @@ import { promises as fs } from 'fs';
 import { spawn } from 'child_process';
 import { join, dirname } from 'path';
 import { printSuccess, printError, printWarning } from '../utils.js';
+import { isClaudeCliAvailable } from '../../utils/claude-cli-detector.js';
 
 // Simple ID generator
 function generateId(prefix = 'id') {
@@ -209,13 +210,7 @@ export class WorkflowExecutor {
    * Check if Claude CLI is available
    */
   async isClaudeAvailable() {
-    try {
-      const { execSync } = await import('child_process');
-      execSync('which claude', { stdio: 'ignore' });
-      return true;
-    } catch {
-      return false;
-    }
+    return isClaudeCliAvailable();
   }
 
   /**

@@ -8,6 +8,7 @@ import { existsSync, chmodSync, statSync, readFileSync } from 'fs';
 import { open } from 'fs/promises';
 import process from 'process';
 import path from 'path';
+import { isClaudeCliAvailable, checkClaudeCliWithErrorMessage } from '../../utils/claude-cli-detector.js';
 
 /**
  * Detects if the environment is headless (non-interactive)
@@ -900,11 +901,8 @@ The swarm should be self-documenting - use memory_store to save all important in
                                isHeadlessEnvironment();
       
       // Check if claude command exists
-      let claudeAvailable = false;
-      try {
-        execSync('which claude', { stdio: 'ignore' });
-        claudeAvailable = true;
-      } catch {
+      const claudeAvailable = isClaudeCliAvailable();
+      if (!claudeAvailable) {
         if (!isNonInteractive) {
           console.log('⚠️  Claude Code CLI not found in PATH');
           console.log('Install it with: npm install -g @anthropic-ai/claude-code');
@@ -1343,9 +1341,7 @@ exit 0
         const { execSync } = await import('child_process');
 
         // Check if claude command exists
-        try {
-          execSync('which claude', { stdio: 'ignore' });
-        } catch (e) {
+        if (!isClaudeCliAvailable()) {
           // Claude not found, show fallback message
           console.log(`✅ Swarm initialized with ID: ${swarmId}`);
           console.log('\n⚠️  Note: Advanced swarm features require Claude or local installation.');

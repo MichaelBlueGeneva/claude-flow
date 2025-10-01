@@ -4,6 +4,7 @@ import { existsSync } from 'fs';
 import process from 'process';
 import { spawn, execSync } from 'child_process';
 import { promisify } from 'util';
+import { isClaudeCliAvailable } from '../../../utils/claude-cli-detector.js';
 
 // Helper to replace Deno.Command
 function runCommand(command, args, options = {}) {
@@ -85,12 +86,7 @@ import {
  * Check if Claude Code CLI is installed
  */
 function isClaudeCodeInstalled() {
-  try {
-    execSync('which claude', { stdio: 'ignore' });
-    return true;
-  } catch {
-    return false;
-  }
+  return isClaudeCliAvailable();
 }
 
 /**

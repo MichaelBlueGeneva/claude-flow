@@ -6,17 +6,13 @@
 
 import { spawn, execSync } from 'child_process';
 import { Readable, PassThrough } from 'stream';
+import { isClaudeCliAvailable } from '../../utils/claude-cli-detector.js';
 
 /**
  * Check if claude CLI is available
  */
 function checkClaudeAvailable() {
-  try {
-    execSync('which claude', { stdio: 'ignore' });
-    return true;
-  } catch {
-    return false;
-  }
+  return isClaudeCliAvailable();
 }
 
 /**
